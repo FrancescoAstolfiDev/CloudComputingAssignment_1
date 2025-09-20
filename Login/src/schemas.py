@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, EmailStr
-from src.userparams import UserParams
+from userparams import UserParams
 
 class UserResponse(BaseModel):
     user_id: str

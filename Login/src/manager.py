@@ -2,9 +2,8 @@ import random
 from typing import Optional
 
 from passlib.context import CryptContext
-from src.model import UserInDB
-from src.userparams import UserParams
-
+from model import UserInDB
+from userparams import UserParams
 
 class UserManager:
     """Handle the user database operations"""
