@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: login-service-config
+data:
+  APP_NAME: letmeknow_login
+  DB_ADDRESS: "http://db-users-service:8002/db_user"

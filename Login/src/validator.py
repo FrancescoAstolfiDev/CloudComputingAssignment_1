@@ -1,10 +1,10 @@
 import re
 from typing import Optional, Any
 
-from  manager import UserManager
-from  model import UserInDB
-from  schemas import UserCreate, UserResponse
-from  userparams import UserParams
+from  .manager import UserManager
+from  .model import UserInDB
+from  .schemas import UserCreate, UserResponse
+from  .userparams import UserParams
 
 
 class UserValidator:
