@@ -41,3 +41,8 @@ async def get_user(identifier: str):
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+@app.get("/login/health", summary="Health check endpoint")
+async def health_check():
+    return {"status": "ok"}
+
