@@ -1,0 +1,86 @@
+# ConfigMap Login Service
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: login-service-config
+  labels:
+    app: login-service
+data:
+  APP_NAME: letmeknow_login
+  DB_ADDRESS: "http://db-users-service:8000/db_user"
+
+---
+# Deployment Login Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: login-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: login-service
+  template:
+    metadata:
+      labels:
+        app: login-service
+    spec:
+      restartPolicy: Always
+      initContainers:
+        - name: wait-for-db
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z db-users-service 8000; do
+                echo "waiting for db..."
+                sleep 2
+              done
+      containers:
+        - name: login-service
+          image: francescoastolfidev00/login-service:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8001
+          env:
+            - name: APP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: login-service-config
+                  key: APP_NAME
+            - name: DB_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: login-service-config
+                  key: DB_ADDRESS
+          livenessProbe:
+            httpGet:
+              path: /login/health
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 2
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /login/health
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+---
+# Service Login Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: login-service
+spec:
+  selector:
+    app: login-service
+  ports:
+    - port: 8001
+      targetPort: 8001
+  type: ClusterIP

@@ -1,0 +1,86 @@
+# ConfigMap Homepage Service
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage-service-config
+  labels:
+    app: homepage-service
+data:
+  APP_NAME: letmeknow_homepage
+  DB_ADDRESS: "http://db-users-service:8000/db_user"
+
+---
+# Deployment Homepage Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homepage-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homepage-service
+  template:
+    metadata:
+      labels:
+        app: homepage-service
+    spec:
+      restartPolicy: Always
+      initContainers:
+        - name: wait-for-db
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z db-users-service 8000; do
+                echo "waiting for db..."
+                sleep 2
+              done
+      containers:
+        - name: homepage-service
+          image: francescoastolfidev00/homepage-service:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8003
+          env:
+            - name: APP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: homepage-service-config
+                  key: APP_NAME
+            - name: DB_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: homepage-service-config
+                  key: DB_ADDRESS
+          livenessProbe:
+            httpGet:
+              path: /homepage/health
+              port: 8003
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 2
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /homepage/health
+              port: 8003
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+---
+# Service Homepage
+apiVersion: v1
+kind: Service
+metadata:
+  name: homepage-service
+spec:
+  selector:
+    app: homepage-service
+  ports:
+    - port: 8003
+      targetPort: 8003
+  type: ClusterIP
