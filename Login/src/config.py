@@ -7,7 +7,6 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 env_file_path = os.path.join(current_dir, "..", ".env")
 env_file_path = os.path.abspath(env_file_path)
 
-print(f"Using .env file (only if no ENV vars are set): {env_file_path}")
 
 class Settings(BaseSettings):
     app_name: str

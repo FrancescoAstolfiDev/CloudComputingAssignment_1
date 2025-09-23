@@ -38,7 +38,7 @@ class UserManager:
         user_dict = user.model_dump(by_alias=True)
         hashed_password = self.pwd_context.hash(user.hashed_password)
         user_dict["hashed_password"] = hashed_password
-        user_dict["_id"] = self.uid_generator()
+        user_dict["user_id"] = self.uid_generator()
         user_dict["params"] = UserParams()
         return UserInDB(**user_dict)
 

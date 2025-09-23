@@ -20,11 +20,9 @@ async def login(request: LoginRequest):
     validator = UserValidator.get_instance()
     try:
         # Chiamata GET al DB service
-        print("prima del get")
         print(settings.db_address)
         async with httpx.AsyncClient() as client:
             resp = await client.get(settings.db_address, params={"identifier": request.identifier})
-        print("dopo della richiesta fatta al db")
         if resp.status_code != 200:
             raise HTTPException(status_code=401, detail="User not found")
         user_data = resp.json()
@@ -38,7 +36,7 @@ async def login(request: LoginRequest):
 
     except httpx.RequestError as exc:
         # ora exc è definito
-        print(f"❌ Errore di comunicazione col DB Service: {type(exc).__name__} - {str(exc)}")
+        print(f"❌ Communication error to the DB service: {type(exc).__name__} - {str(exc)}")
         raise HTTPException(status_code=500, detail="DB Service not reachable")
 
 

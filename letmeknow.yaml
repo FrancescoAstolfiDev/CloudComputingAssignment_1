@@ -12,7 +12,7 @@ data:
   MONGODB_USERNAME: astolfifrancesco00
   MONGODB_PASSWORD: H6oItdTRDs1PHnDU
   MONGODB_CLUSTER: cluster0.x3jcbgn.mongodb.net
-  MONGODB_DB: user
+  MONGODB_DB: letmeknow
 
 ---
 # ==========================
@@ -27,6 +27,20 @@ metadata:
 data:
   APP_NAME: letmeknow_login
   DB_ADDRESS: "http://db-users-service:8000/db_user"
+
+---
+# ==========================
+# ConfigMap API Gateway
+# ==========================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-config
+  labels:
+    app: api-gateway-service
+data:
+  APP_NAME: letmeknow_gateway
+  LOGIN_ADDRESS: "http://login-service:8001"
 
 ---
 # ==========================
@@ -163,8 +177,151 @@ spec:
   selector:
     app: login-service
   ports:
-    - port: 8001         # porta interna del service
-      targetPort: 8001   # porta sul container
+    - port: 8001
+      targetPort: 8001
       protocol: TCP
-  type: LoadBalancer    # espone il servizio esternamente con IP pubblico
+  type: ClusterIP
+
+---
+# ==========================
+# Deployment API Gateway
+# ==========================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway-service
+  template:
+    metadata:
+      labels:
+        app: api-gateway-service
+    spec:
+      containers:
+        - name: api-gateway
+          image: francescoastolfidev00/api-gateway-service:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8002
+              name: http
+              protocol: TCP
+          env:
+            - name: APP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-config
+                  key: APP_NAME
+            - name: LOGIN_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-config
+                  key: LOGIN_ADDRESS
+          livenessProbe:
+            httpGet:
+              path: /APIgateway/health
+              port: 8002
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+---
+# ==========================
+# Service API Gateway
+# ==========================
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-service
+spec:
+  selector:
+    app: api-gateway-service
+  ports:
+    - port: 8002
+      targetPort: 8002
+  type: LoadBalancer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -2,8 +2,8 @@ import re
 from typing import Optional, Any
 
 from  .manager import UserManager
-from  .model import UserInDB
 from  .schemas import UserCreate, UserResponse
+from .model import UserInDB
 from  .userparams import UserParams
 
 
@@ -38,7 +38,7 @@ class UserValidator:
         return 0
 
 
-    def create_user(self, user: UserCreate)->Optional[UserInDB]:
+    def create_user(self, user: UserInDB)->Optional[UserInDB]:
         """Create a new user in the database"""
         # Password validation
         try :
@@ -46,13 +46,20 @@ class UserValidator:
         except ValueError:
             raise ValueError
         # If everything is valid, create the user
-        user=UserInDB(_id="0000000",email=user.email,hashed_password=user.password,params=UserParams())
+        user=UserInDB(_id="0000000", email=user.email, hashed_password=user.password, params=UserParams())
         user=self.manager.create_user(user)
         return user
 
     def out_user(self, dict: Any)->Optional[UserResponse]:
+        id:str =dict["user_id"]
+        if ( id.__len__()!=7):
+            return ValueError("Invalid user ID")
+        try :
+            UserParams(**dict["params"])
+        except ValueError:
+            raise ValueError("Invalid params")
         return UserResponse(
-            user_id=dict["_id"],
+            user_id=dict["user_id"],
             params=UserParams(**dict["params"])
         )
 
