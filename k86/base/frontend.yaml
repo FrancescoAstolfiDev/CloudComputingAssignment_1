@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: frontend
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: react-frontend-config
+  namespace: frontend
+data:
+  REACT_APP_API_BASE_URL: "http://localhost:8002"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-frontend
+  namespace: frontend
+  labels:
+    app: react-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: react-frontend
+  template:
+    metadata:
+      labels:
+        app: react-frontend
+    spec:
+      containers:
+        - name: react-frontend
+          image: francescoastolfidev00/react-frontend:1.0
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: react-frontend-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-frontend-lb
+  namespace: frontend
+spec:
+  type: LoadBalancer
+  selector:
+    app: react-frontend
+  ports:
+    - protocol: TCP
+      port: 80       # porta esterna
+      targetPort: 80 # porta interna del container
