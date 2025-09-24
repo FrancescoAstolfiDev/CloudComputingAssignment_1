@@ -37,7 +37,7 @@ class UserValidator:
         Raises ValueError if the conversion is not possible.
         """
         # Insert the validated user into the database
-        user=UserInDB(**user.model_dump(by_alias=True))
+        user=UserInDB(_id=user.user_id, email=user.email, hashed_password=user.hashed_password, params=user.params)
         user=self.manager.insert_user(user)
         if user is None:
             raise ValueError("Invalid user ID or password")

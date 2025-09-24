@@ -46,7 +46,7 @@ class UserValidator:
         except ValueError:
             raise ValueError
         # If everything is valid, create the user
-        user=UserInDB(_id="0000000", email=user.email, hashed_password=user.password, params=UserParams())
+        user=UserInDB(user_id="0000000", email=user.email, hashed_password=user.password, params=UserParams())
         user=self.manager.create_user(user)
         return user
 

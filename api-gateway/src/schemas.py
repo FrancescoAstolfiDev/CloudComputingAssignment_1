@@ -6,8 +6,8 @@ class UserBasicInfo(BaseModel):
     params: UserParams = Field(..., description="Param of the user")
 
 class UserCreate(BaseModel):
-    email: EmailStr
     password: str
+    email: EmailStr
 
 class LoginRequest(BaseModel):
     identifier: str  # può essere user_id o email
