@@ -24,7 +24,7 @@ class MongoDBManager:
             self.connection_string = self._build_connection_string()
 
     def _build_connection_string(self) -> str:
-        """Costruisce la stringa di connessione"""
+        """build the connection string for MongoDB"""
         return (
             f"mongodb+srv://{settings.mongodb_username}:"
             f"{settings.mongodb_password.get_secret_value()}@"
@@ -34,7 +34,7 @@ class MongoDBManager:
         )
 
     def connect(self) -> Database:
-        """Stabilisce la connessione al database"""
+        """Create a connection to the Mongodb database"""
         try:
             if self._client is None:
                 self._client = MongoClient(

@@ -4,7 +4,7 @@ from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
 
-# Percorso assoluto del file .env nella root del progetto
+#absolute path to the project directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
 env_file_path = os.path.join(current_dir, "..", ".env")
 env_file_path = os.path.abspath(env_file_path)
@@ -18,7 +18,8 @@ class Settings(BaseSettings):
     mongodb_db: str
     modelconfig: ClassVar[SettingsConfigDict] = SettingsConfigDict(env_file=env_file_path)
 
-
+# Settings() use the .env file if no ENV vars are set
+# otherway use the ENV vars
 settings = Settings(_env_file=env_file_path)
 
 

@@ -21,19 +21,19 @@ function LoginPage() {
             });
 
             if (!resp.ok) {
-                throw new Error("Login fallito");
+                throw new Error("Login failure");
             }
 
             const data = await resp.json();
-            setMessage(`✅ Benvenuto ${data.user_id || "utente"}`);
+            setMessage(`✅ Welcome ${data.user_id || "user"}`);
 
-            // ✅ salva solo lo userId nello store
+            // setUserId in Redux Store
             dispatch(setUserId(data.user_id));
 
-            // ✅ reindirizza alla home
+            //route to the home page
             navigate("/home");
         } catch (err) {
-            setMessage("❌ Errore di login: " + err.message);
+            setMessage("❌ Error during the login : " + err.message);
         }
     };
 
@@ -108,7 +108,7 @@ function LoginPage() {
                         cursor: "pointer"
                     }}
                 >
-                    Non hai un account? Registrati
+                    Dont have an account ? Sign up
                 </button>
 
                 <p style={{ marginTop: "15px", color: "#333" }}>{message}</p>

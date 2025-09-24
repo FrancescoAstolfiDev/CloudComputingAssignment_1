@@ -23,6 +23,7 @@ class UserValidator:
         if cls._instance is None:
             cls._instance = UserValidator()
         return cls._instance
+
     def password_validator(self,password):
         # Password validation
         if len(password) < 8:
@@ -51,13 +52,6 @@ class UserValidator:
         return user
 
     def out_user(self, dict: Any)->Optional[UserResponse]:
-        id:str =dict["user_id"]
-        if ( id.__len__()!=7):
-            return ValueError("Invalid user ID")
-        try :
-            UserParams(**dict["params"])
-        except ValueError:
-            raise ValueError("Invalid params")
         return UserResponse(
             user_id=dict["user_id"],
             params=UserParams(**dict["params"])
@@ -76,11 +70,3 @@ class UserValidator:
         return True
 
 
-if __name__ == "__main__":
-    validator = UserValidator.get_instance()
-    user = UserCreate(password="SecurePass123!", email="user12@example.com")
-    user_dict = validator.create_user(user)
-    print(user_dict)
-
-    validator.matching_pswd("SecurePass123!", user_dict.hashed_password)
-    validator.out_user({'_id': '5158448', 'email': 'user9000@example.com', 'hashed_password': '$2b$12$4HmJJ5aRu/.OyBM1TGJz7esW0gT7a9ceQUGgx6MKsbolSz7fk7hX2', 'params': {'humor': 3, 'empathy': 3, 'optimism': 3}})

@@ -58,8 +58,4 @@ kubectl delete all --all -n letmeknow
 # ----------------------------
 # Kubernetes – Namespace Cleanup
 # ----------------------------
-# List all namespaces, exclude system/default ones,
-# and delete the rest (⚠️ be careful: this removes all non-default namespaces).
-kubectl get ns --no-headers -o custom-columns=":metadata.name" \
-  | grep -vE 'kube-system|kube-public|default' \
-  | xargs kubectl delete namespace
+kubectl delete namespace letmeknow

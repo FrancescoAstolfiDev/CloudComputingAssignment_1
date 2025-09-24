@@ -33,10 +33,7 @@ async def login(request: LoginRequest):
         if resp.status_code != 200:
             raise HTTPException(status_code=resp.status_code, detail="Login failed")
 
-        # Recupero i dati dal login service
         user_data = resp.json()
-
-        # Estraggo user_id o identifier
         user_id = user_data.get("user_id") or user_data.get("identifier")
 
         return {"user_id": user_id}
@@ -66,10 +63,6 @@ async def create_user(user: UserCreate):
 
 @app.get("/user", response_model=UserBasicInfo)
 async def show_homepage(identifier: str):
-    """
-    Recupera i parametri dell'utente dal servizio Homepage e li restituisce
-    come oggetto UserBasicInfo.
-    """
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             resp = await client.get(
@@ -81,9 +74,6 @@ async def show_homepage(identifier: str):
             raise HTTPException(status_code=resp.status_code, detail="User not found in homepage service")
 
         user_data = resp.json()
-        # user_data deve avere la struttura:
-        # { "user_id": "xxx", "params": { "empathy": 4, "humor": 3, "optimism": 5 } }
-
         return UserBasicInfo(**user_data)
 
     except httpx.RequestError as exc:
@@ -97,15 +87,11 @@ async def show_homepage(identifier: str):
 @app.put("/user")
 async def edit_params(user: UserBasicInfo):
     try:
-        print(user)
-        print ( user.model_dump())
         async with httpx.AsyncClient(timeout=5.0) as client:
             resp = await client.put(
                 settings.homepage_address + "/user",
                 json=user.model_dump()
             )
-        print (" file changed")
-        print(resp)
         return Response(
             content=resp.content,
             status_code=resp.status_code,

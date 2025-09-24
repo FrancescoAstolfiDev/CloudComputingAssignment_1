@@ -5,7 +5,7 @@ import { API_BASE_URL } from "../config/api";
 import { useSelector } from "react-redux";
 
 function UserHomePage() {
-    // ✅ leggi userId dallo store Redux
+    // get the redux state
     const userId = useSelector((state) => state.user.userId);
 
     const [empathy, setEmpathy] = useState(4);
@@ -14,9 +14,9 @@ function UserHomePage() {
 
     const [isEditing, setIsEditing] = useState(false);
 
-    // fetch dei valori iniziali dal backend
+    //fetch user data
     const fetchUserData = async () => {
-        if (!userId) return; // protezione se userId non presente
+        if (!userId) return; // if the userid not exists, return
         try {
             const res = await axios.get(`${API_BASE_URL}/user`, {
                 params: { identifier: userId }

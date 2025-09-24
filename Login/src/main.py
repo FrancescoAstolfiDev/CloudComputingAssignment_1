@@ -12,21 +12,16 @@ app = FastAPI(title=settings.app_name)
 async def root():
     return {"message": " Login Service"}
 
-# Schema per login
-
 
 @app.post("/login", response_model=UserResponse, summary="Authenticate a user")
 async def login(request: LoginRequest):
     validator = UserValidator.get_instance()
     try:
-        # Chiamata GET al DB service
-        print(settings.db_address)
         async with httpx.AsyncClient() as client:
             resp = await client.get(settings.db_address, params={"identifier": request.identifier})
         if resp.status_code != 200:
             raise HTTPException(status_code=401, detail="User not found")
         user_data = resp.json()
-        print("prima del matching")
         res = validator.matching_pswd(request.password, user_data.get("hashed_password"))
         if res is False:
             raise HTTPException(status_code=401, detail="Invalid user ID or password")
@@ -35,7 +30,6 @@ async def login(request: LoginRequest):
         return validator.out_user(user_data)
 
     except httpx.RequestError as exc:
-        # ora exc è definito
         print(f"❌ Communication error to the DB service: {type(exc).__name__} - {str(exc)}")
         raise HTTPException(status_code=500, detail="DB Service not reachable")
 
@@ -47,10 +41,10 @@ async def login(request: LoginRequest):
 async def create_user(user: UserCreate):
     validator = UserValidator.get_instance()
     try:
-        # Genera il nuovo utente tramite validator
+        # Generate a new user
         user_obj = validator.create_user(user)
 
-        # Chiamata asincrona al DB service
+        # Write call
         async with httpx.AsyncClient() as client:
             resp = await client.post(settings.db_address, json=user_obj.dict())
 
@@ -58,10 +52,7 @@ async def create_user(user: UserCreate):
             raise HTTPException(status_code=500, detail="Error creating user in DB")
 
         created_user = resp.json()
-        print("out ottenuto dalla scritta del db")
-        print(created_user)
-
-        # Prepara la risposta per il client
+        # Write a response for the client
         out = validator.out_user(created_user)
         return out
 

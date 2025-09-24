@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     # carica .env solo se non trovi già variabili d'ambiente
     model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(env_file=env_file_path)
 
-# Settings() usa già le ENV di sistema se presenti,
-# altrimenti cade in fallback sul .env
+# Settings() use the .env file if no ENV vars are set
+# otherway use the ENV vars
 settings = Settings()
 

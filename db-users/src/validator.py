@@ -79,20 +79,3 @@ class UserValidator:
 
         raise ValueError("Identifier must be either a valid email or a 7-character user ID")
 
-
-if __name__ == "__main__":
-    service = UserValidator.get_instance()
-    user_data = {
-        "user_id": "1234598",
-        "email": "test@example.com",  # added email
-        "params": {
-            "humor": 3,
-            "empathy": 4,
-            "optimism": 2
-        },
-        "hashed_password": "$2b$12$ge8TS7zhIrfgrBcDASfBn.q/QBv18CzCenvAMBDtITdfBJj.nils.",
-        "created_at": {
-            "$date": "2025-09-20T08:58:29.074Z"
-        }
-    }
-    service.insert_user(user_data)

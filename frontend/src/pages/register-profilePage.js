@@ -17,17 +17,17 @@ function RegisterPage() {
     const navigate = useNavigate();
 
     const validatePassword = (pwd) => {
-        if (pwd.length < 8) return "La password deve avere almeno 8 caratteri";
-        if (!/[A-Z]/.test(pwd)) return "La password deve contenere almeno una lettera maiuscola";
-        if (!/[a-z]/.test(pwd)) return "La password deve contenere almeno una lettera minuscola";
-        if (!/[0-9]/.test(pwd)) return "La password deve contenere almeno un numero";
-        if (!/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) return "La password deve contenere almeno un carattere speciale";
+        if (pwd.length < 8) return "The password must be at least 8 characters long";
+        if (!/[A-Z]/.test(pwd)) return "The password must contain at least one uppercase letter";
+        if (!/[a-z]/.test(pwd)) return "The password must contain at least one lowercase letter";
+        if (!/[0-9]/.test(pwd)) return "The password must contain at least one number";
+        if (!/[!@#$%^&*(),.?:{}|<>]/.test(pwd)) return "The password must contain at least one special character [!@#$%^&*(),.?:{}|<>]";
         return null;
     };
 
     const handleRegister = async () => {
         if (password !== confirmPassword) {
-            setMessage("❌ Le password non coincidono");
+            setMessage("❌ the passwords do not match");
             return;
         }
 
@@ -48,14 +48,14 @@ function RegisterPage() {
             });
 
             if (!resp.ok) {
-                throw new Error("Registrazione fallita");
+                throw new Error("Registration fail");
             }
 
             const data = await resp.json();
-            setMessage(`✅ Registrazione completata per ${data.email || email}. Ora puoi effettuare il login.`);
+            setMessage(`✅ Complete signup ${data.email || email}. Now you can login.`);
             setSuccess(true);
         } catch (err) {
-            setMessage("❌ Errore di registrazione: " + err.message);
+            setMessage("❌ Error of signup: " + err.message);
         } finally {
             setLoading(false);
         }
