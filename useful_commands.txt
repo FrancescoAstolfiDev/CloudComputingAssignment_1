@@ -1,0 +1,65 @@
+# ============================
+# LetMeKnow – Utility Commands
+# ============================
+# This file contains useful commands for building, pushing, deploying,
+# and managing the microservices and Kubernetes resources.
+
+# ----------------------------
+# Python Environment
+# ----------------------------
+# Export the current Python dependencies into requirements.txt
+# This ensures reproducible builds for Docker or virtual environments.
+pip freeze > requirements.txt
+
+
+# ----------------------------
+# Docker – Build and Push Images
+# ----------------------------
+# Build and push the API Gateway Service Docker image
+docker build -t francescoastolfidev00/api-gateway-service:1.0 .
+docker push francescoastolfidev00/api-gateway-service:1.0
+
+# Build and push the DB Users Service Docker image
+docker build -t francescoastolfidev00/db-users-service:1.0 .
+docker push francescoastolfidev00/db-users-service:1.0
+
+# Build and push the Homepage Service Docker image
+docker build -t francescoastolfidev00/homepage-service:1.0 .
+docker push francescoastolfidev00/homepage-service:1.0
+
+# Build and push the Login Service Docker image
+docker build -t francescoastolfidev00/login-service:1.0 .
+docker push francescoastolfidev00/login-service:1.0
+
+
+# ----------------------------
+# Kubernetes – Deployment and Management
+# ----------------------------
+# Create a new namespace called letmeknow
+kubectl create namespace letmeknow
+
+# Apply all Kubernetes manifests in k86/base/ into the letmeknow namespace
+kubectl apply -n letmeknow -f k86/base/
+
+# List all pods running in the letmeknow namespace
+kubectl get -n letmeknow pods
+
+# List all services in the letmeknow namespace
+kubectl get services -n letmeknow
+
+# Show logs from a specific API Gateway pod
+# (replace the pod name with the one you see in kubectl get pods)
+kubectl logs -n letmeknow api-gateway-service-576877f8b4-brs8v
+
+# Delete ALL resources (pods, services, deployments, etc.) in the letmeknow namespace
+kubectl delete all --all -n letmeknow
+
+
+# ----------------------------
+# Kubernetes – Namespace Cleanup
+# ----------------------------
+# List all namespaces, exclude system/default ones,
+# and delete the rest (⚠️ be careful: this removes all non-default namespaces).
+kubectl get ns --no-headers -o custom-columns=":metadata.name" \
+  | grep -vE 'kube-system|kube-public|default' \
+  | xargs kubectl delete namespace
