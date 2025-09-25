@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: react-frontend
-          image: francescoastolfidev00/react-frontend:1.0
+          image: francescoastolfidev00/frontend-service:2.0
           ports:
             - containerPort: 80
           envFrom:
@@ -48,5 +48,5 @@ spec:
     app: react-frontend
   ports:
     - protocol: TCP
-      port: 80       # porta esterna
-      targetPort: 80 # porta interna del container
+      port: 80       # out door
+      targetPort: 80 # inner door

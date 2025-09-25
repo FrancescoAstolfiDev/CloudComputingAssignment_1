@@ -36,7 +36,7 @@ docker push francescoastolfidev00/login-service:1.0
 # Kubernetes – Deployment and Management
 # ----------------------------
 # Create a new namespace called letmeknow
-kubectl create namespace letmeknow
+kubectl create namespace letmeknowc
 
 # Apply all Kubernetes manifests in k86/base/ into the letmeknow namespace
 kubectl apply -n letmeknow -f k86/base/
