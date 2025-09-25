@@ -9,7 +9,7 @@ metadata:
   name: react-frontend-config
   namespace: letmeknow
 data:
-  REACT_APP_API_BASE_URL: "http://localhost:8002"
+  REACT_APP_API_BASE_URL: "http://api-gateway-service:8002"
 ---
 apiVersion: apps/v1
 kind: Deployment
